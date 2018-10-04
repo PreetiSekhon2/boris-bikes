@@ -1,17 +1,17 @@
+require "./lib/bike.rb"
+
 class DockingStation
   MAXSIZE= 20
   attr_accessor :sizeofthisstation
   def initialize (max = MAXSIZE)
     @sizeofthisstation = max
-    @bike = Bike.new
-    @bikes_in_station = [@bike]
+    @bikes_in_station = []
   end
 
   def release_bike
     #raise "No bike available" unless @bikes_in_station.length > 0
     raise "No bike available" if empty?
     @bikes_in_station.pop
-    return @bike
   end
 
   def dock(bike)
@@ -26,6 +26,16 @@ class DockingStation
     bike.condition_to_defective
     @bikes_in_station << bike
     return "Defective bike docked"
+  end
+
+  def return_defective_bikes
+    defective_bikes = []
+    @bikes_in_station.length.times do |x|
+      if @bikes_in_station[x].working? == false
+        defective_bikes.push (@bikes_in_station.delete_at(x))
+      end
+    end
+    return defective_bikes
   end
 
   def full?
@@ -51,29 +61,4 @@ class DockingStation
 
   private :full?, :empty?
 
-end
-
-
-class Bike
-
-  def initialize
-    @bike_condition = true
-  end
-
-  def working?
-    return @bike_condition
-  end
-
-  def condition_to_defective
-    @bike_condition = false
-  end
-end
-
-class Van
-  def fetch_broken_bikes(dockingstation)
-    return 1
-  end
-end
-
-class Garage
 end
